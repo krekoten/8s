@@ -41,7 +41,18 @@ func (l *Lexer) currentTokenType() TokenType {
 
 func (l *Lexer) Tokenize() []Token {
 	for !l.endOfFile() {
-		l.tokens = append(l.tokens, NewToken(l.currentTokenType(), l.currentPosition))
+		currentTokenType := l.currentTokenType()
+
+		// combine continuous comments into one token
+		if currentTokenType == Comment {
+			l.tokens = append(l.tokens, NewToken(Comment, l.currentPosition))
+
+			for tokenType := l.currentTokenType(); !l.endOfFile() && tokenType == Comment; l.next() {
+			}
+			continue
+		}
+
+		l.tokens = append(l.tokens, NewToken(currentTokenType, l.currentPosition))
 		l.next()
 	}
 

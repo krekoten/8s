@@ -114,3 +114,15 @@ func TestCommentTokenized(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, actual)
 	}
 }
+
+func TestMultipleCommentsTokenized(t *testing.T) {
+	sourceCode := "abc some code"
+	expected := []lexer.Token{lexer.NewToken(lexer.Comment, 0), lexer.NewToken(lexer.EndOfFile, len(sourceCode))}
+
+	l := lexer.New(sourceCode)
+	actual := l.Tokenize()
+
+	if !cmp.Equal(expected, actual) {
+		t.Errorf("Expected %v, got %v", expected, actual)
+	}
+}
