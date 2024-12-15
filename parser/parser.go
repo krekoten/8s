@@ -33,15 +33,48 @@ func (p *Parser) Parse() ast.AstStatements {
 			continue
 		}
 
-		stmt.Statements = append(stmt.Statements, tokenToAstNode[token.TokenType])
+		if token.TokenType == lexer.LoopStart {
+			loop := p.parseLoop()
+			stmt.Statements = append(stmt.Statements, loop)
+		} else {
+			stmt.Statements = append(stmt.Statements, tokenToAstNode[token.TokenType])
+		}
+
 		p.next()
 	}
 
 	return stmt
 }
 
+func (p *Parser) parseLoop() ast.AstLoop {
+	stmt := ast.AstStatements{}
+
+	p.next() // skip loop start command
+
+	for !p.end() && p.currentToken().TokenType != lexer.LoopEnd {
+		token := p.currentToken()
+		if token.TokenType == lexer.Comment {
+			p.next()
+			continue
+		}
+
+		if token.TokenType == lexer.LoopStart {
+			nestedLoop := p.parseLoop()
+			stmt.Statements = append(stmt.Statements, nestedLoop)
+		} else {
+			stmt.Statements = append(stmt.Statements, tokenToAstNode[token.TokenType])
+		}
+
+		p.next()
+	}
+
+	p.next() // skip loop end command
+
+	return ast.AstLoop{Statements: stmt}
+}
+
 func (p *Parser) end() bool {
-	return p.currentToken().TokenType == lexer.EndOfFile
+	return p.pos >= len(p.tokens) || p.currentToken().TokenType == lexer.EndOfFile
 }
 
 func (p *Parser) currentToken() lexer.Token {
