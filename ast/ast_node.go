@@ -1,5 +1,9 @@
 package ast
 
+type Visitor interface {
+	visit(n AstNode)
+}
+
 type AstNode interface {
-	ast()
+	accept(v Visitor)
 }

@@ -6,7 +6,9 @@ type AstStatements struct {
 	Statements []AstNode
 }
 
-func (node AstStatements) ast() {}
+func (node AstStatements) accept(v Visitor) {
+	v.visit(node)
+}
 
 func (node AstStatements) String() string {
 	return fmt.Sprintf("AstStatements{Statements: %s}", node.Statements)
