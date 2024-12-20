@@ -6,8 +6,8 @@ type AstLoop struct {
 	Statements AstStatements
 }
 
-func (node AstLoop) accept(v Visitor) {
-	v.visit(node)
+func (node AstLoop) Accept(v Visitor) {
+	v.VisitLoop(node)
 }
 
 func (node AstLoop) String() string {

@@ -2,8 +2,8 @@ package ast
 
 type AstInput struct{}
 
-func (node AstInput) accept(v Visitor) {
-	v.visit(node)
+func (node AstInput) Accept(v Visitor) {
+	v.VisitInput(node)
 }
 
 func (node AstInput) String() string {

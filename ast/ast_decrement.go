@@ -1,11 +1,15 @@
 package ast
 
-type AstDecrement struct{}
+import "fmt"
 
-func (node AstDecrement) accept(v Visitor) {
-	v.visit(node)
+type AstDecrement struct {
+	Value byte
+}
+
+func (node AstDecrement) Accept(v Visitor) {
+	v.VisitDecrement(node)
 }
 
 func (node AstDecrement) String() string {
-	return "AstDecrement"
+	return fmt.Sprintf("AstDecrement{Value: %v}", node.Value)
 }

@@ -5,13 +5,23 @@ import (
 	"github.com/krekoten/8s/lexer"
 )
 
-var tokenToAstNode map[lexer.TokenType]ast.AstNode = map[lexer.TokenType]ast.AstNode{
-	lexer.MoveRight: ast.AstNextCell{},
-	lexer.MoveLeft:  ast.AstPrevCell{},
-	lexer.Increment: ast.AstIncrement{},
-	lexer.Decrement: ast.AstDecrement{},
-	lexer.Input:     ast.AstInput{},
-	lexer.Output:    ast.AstOutput{},
+func defaultHandler(node ast.AstNode) func() ast.AstNode {
+	return func() ast.AstNode {
+		return node
+	}
+}
+
+var tokenToAstNode map[lexer.TokenType]func() ast.AstNode = map[lexer.TokenType]func() ast.AstNode{
+	lexer.MoveRight: defaultHandler(ast.AstNextCell{}),
+	lexer.MoveLeft:  defaultHandler(ast.AstPrevCell{}),
+	lexer.Input:     defaultHandler(ast.AstInput{}),
+	lexer.Output:    defaultHandler(ast.AstOutput{}),
+	lexer.Increment: func() ast.AstNode {
+		return ast.AstIncrement{Value: 1}
+	},
+	lexer.Decrement: func() ast.AstNode {
+		return ast.AstDecrement{Value: 1}
+	},
 }
 
 type Parser struct {
@@ -37,10 +47,14 @@ func (p *Parser) Parse() ast.AstStatements {
 			loop := p.parseLoop()
 			stmt.Statements = append(stmt.Statements, loop)
 		} else {
-			stmt.Statements = append(stmt.Statements, tokenToAstNode[token.TokenType])
+			stmt.Statements = append(stmt.Statements, tokenToAstNode[token.TokenType]())
 		}
 
 		p.next()
+	}
+
+	if p.end() {
+		stmt.Statements = append(stmt.Statements, ast.AstExit{})
 	}
 
 	return stmt
@@ -62,7 +76,7 @@ func (p *Parser) parseLoop() ast.AstLoop {
 			nestedLoop := p.parseLoop()
 			stmt.Statements = append(stmt.Statements, nestedLoop)
 		} else {
-			stmt.Statements = append(stmt.Statements, tokenToAstNode[token.TokenType])
+			stmt.Statements = append(stmt.Statements, tokenToAstNode[token.TokenType]())
 		}
 
 		p.next()

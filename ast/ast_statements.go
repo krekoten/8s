@@ -6,8 +6,8 @@ type AstStatements struct {
 	Statements []AstNode
 }
 
-func (node AstStatements) accept(v Visitor) {
-	v.visit(node)
+func (node AstStatements) Accept(v Visitor) {
+	v.VisitStatements(node)
 }
 
 func (node AstStatements) String() string {

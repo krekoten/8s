@@ -25,10 +25,11 @@ func TestParsingSimpleCommands(t *testing.T) {
 		Statements: []ast.AstNode{
 			ast.AstNextCell{},
 			ast.AstPrevCell{},
-			ast.AstIncrement{},
-			ast.AstDecrement{},
+			ast.AstIncrement{Value: 1},
+			ast.AstDecrement{Value: 1},
 			ast.AstInput{},
 			ast.AstOutput{},
+			ast.AstExit{},
 		},
 	}
 
@@ -44,6 +45,7 @@ func TestParsingLoops(t *testing.T) {
 		lexer.NewToken(lexer.LoopStart, 0),
 		lexer.NewToken(lexer.Increment, 1),
 		lexer.NewToken(lexer.LoopEnd, 2),
+		lexer.NewToken(lexer.EndOfFile, 3),
 	}
 	p := parser.New(tokens)
 
@@ -52,10 +54,11 @@ func TestParsingLoops(t *testing.T) {
 			ast.AstLoop{
 				Statements: ast.AstStatements{
 					Statements: []ast.AstNode{
-						ast.AstIncrement{},
+						ast.AstIncrement{Value: 1},
 					},
 				},
 			},
+			ast.AstExit{},
 		},
 	}
 
@@ -74,6 +77,7 @@ func TestParsingNestedLoops(t *testing.T) {
 		lexer.NewToken(lexer.Decrement, 3),
 		lexer.NewToken(lexer.LoopEnd, 4),
 		lexer.NewToken(lexer.LoopEnd, 5),
+		lexer.NewToken(lexer.EndOfFile, 6),
 	}
 	p := parser.New(tokens)
 
@@ -82,17 +86,18 @@ func TestParsingNestedLoops(t *testing.T) {
 			ast.AstLoop{
 				Statements: ast.AstStatements{
 					Statements: []ast.AstNode{
-						ast.AstIncrement{},
+						ast.AstIncrement{Value: 1},
 						ast.AstLoop{
 							Statements: ast.AstStatements{
 								Statements: []ast.AstNode{
-									ast.AstDecrement{},
+									ast.AstDecrement{Value: 1},
 								},
 							},
 						},
 					},
 				},
 			},
+			ast.AstExit{},
 		},
 	}
 
