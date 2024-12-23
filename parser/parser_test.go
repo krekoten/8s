@@ -77,7 +77,8 @@ func TestParsingNestedLoops(t *testing.T) {
 		lexer.NewToken(lexer.Decrement, 3),
 		lexer.NewToken(lexer.LoopEnd, 4),
 		lexer.NewToken(lexer.LoopEnd, 5),
-		lexer.NewToken(lexer.EndOfFile, 6),
+		lexer.NewToken(lexer.Increment, 6),
+		lexer.NewToken(lexer.EndOfFile, 7),
 	}
 	p := parser.New(tokens)
 
@@ -97,6 +98,7 @@ func TestParsingNestedLoops(t *testing.T) {
 					},
 				},
 			},
+			ast.AstIncrement{Value: 1},
 			ast.AstExit{},
 		},
 	}

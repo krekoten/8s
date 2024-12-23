@@ -82,8 +82,6 @@ func (p *Parser) parseLoop() ast.AstLoop {
 		p.next()
 	}
 
-	p.next() // skip loop end command
-
 	return ast.AstLoop{Statements: stmt}
 }
 
