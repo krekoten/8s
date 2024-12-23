@@ -7,20 +7,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// func init() {
-// var code string
-// l := lexer.New(code)
-// tokens := l.Tokenize()
-
-// p := parser.New(tokens)
-// ast := p.Parse()
-
-// c := compiler.New(ast)
-// byteCode := c.Compile()
-
-// v := vm.New(byteCode)
-// v.Run()
-// }
 var rootCmd = &cobra.Command{
 	Use:   "8s",
 	Short: "8s is a brainfuck compiler & VM",
