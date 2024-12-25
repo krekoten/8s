@@ -52,7 +52,7 @@ func (vm *vm) Run() {
 			offset := int(vm.currentInstruction())
 			addr := page*256 + offset
 			if vm.currentData() == 0 {
-				vm.ip = int(addr)
+				vm.ip = addr
 			} else {
 				vm.ip += 1
 			}
@@ -63,7 +63,7 @@ func (vm *vm) Run() {
 			offset := int(vm.currentInstruction())
 			addr := page*256 + offset
 			if vm.currentData() != 0 {
-				vm.ip = int(addr)
+				vm.ip = addr
 			} else {
 				vm.ip += 1
 			}
