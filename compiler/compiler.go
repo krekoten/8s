@@ -21,11 +21,6 @@ func (c *Compiler) emit(opc asm.OpCode) {
 	c.ip += 1
 }
 
-func (c *Compiler) emitWithValue(opc, value asm.OpCode) {
-	c.instr = append(c.instr, opc, value)
-	c.ip += 2
-}
-
 func (c *Compiler) updateWithValueAt(i int, value asm.OpCode) {
 	c.instr[i] = value
 }
@@ -36,11 +31,13 @@ func (c *Compiler) Compile() []asm.OpCode {
 }
 
 func (c *Compiler) VisitIncrement(n ast.AstIncrement) {
-	c.emitWithValue(asm.OpcodeIncreaseBy, 1)
+	c.emit(asm.OpcodeIncreaseBy)
+	c.emit(1)
 }
 
 func (c *Compiler) VisitDecrement(n ast.AstDecrement) {
-	c.emitWithValue(asm.OpCodeDecreaseBy, 1)
+	c.emit(asm.OpCodeDecreaseBy)
+	c.emit(1)
 }
 
 func (c *Compiler) VisitNextCell(n ast.AstNextCell) {
@@ -72,12 +69,17 @@ func (c *Compiler) VisitExit(n ast.AstExit) {
 func (c *Compiler) VisitLoop(n ast.AstLoop) {
 	currentIp := c.ip
 
-	c.emitWithValue(asm.OpCodeJmpZ, 0)
+	c.emit(asm.OpCodeJmpZ)
+	c.emit(0)
+	c.emit(0)
 	c.VisitStatements(n.Statements)
 	// next byte after JmpZ and address
-	c.emitWithValue(asm.OpCodeJmpNZ, asm.OpCode(currentIp+2))
+	c.emit(asm.OpCodeJmpNZ)
+	c.emit(asm.OpCode((currentIp + 3) / 256)) // page
+	c.emit(asm.OpCode((currentIp + 3) % 256)) // offset
 
 	endOfLoopIp := c.ip
 	// patch JmpZ's address to next after ZmpNZ address cell
-	c.updateWithValueAt(currentIp+1, asm.OpCode(endOfLoopIp))
+	c.updateWithValueAt(currentIp+1, asm.OpCode(endOfLoopIp/256)) // page
+	c.updateWithValueAt(currentIp+2, asm.OpCode(endOfLoopIp%256)) // offset
 }

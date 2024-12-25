@@ -43,12 +43,14 @@ func TestCompilation(t *testing.T) {
 		asm.OpCodeInput,      //	 6
 		asm.OpCodeOutput,     //	 7
 		asm.OpCodeJmpZ,       //   8
-		14,                   //	 9
-		asm.OpcodeIncreaseBy, //	10
-		1,                    //	11
-		asm.OpCodeJmpNZ,      //	12
-		10,                   //	13
-		asm.OpCodeNoOp,       //  14
+		0,                    //   9
+		16,                   //	10
+		asm.OpcodeIncreaseBy, //	11
+		1,                    //	12
+		asm.OpCodeJmpNZ,      //	13
+		0,                    //  14
+		11,                   //	15
+		asm.OpCodeNoOp,       //  16
 	}
 
 	if !cmp.Equal(expected, actual) {

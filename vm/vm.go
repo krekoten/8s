@@ -47,7 +47,10 @@ func (vm *vm) Run() {
 			vm.ip += 1
 		case asm.OpCodeJmpZ:
 			vm.ip += 1
-			addr := vm.currentInstruction()
+			page := int(vm.currentInstruction())
+			vm.ip += 1
+			offset := int(vm.currentInstruction())
+			addr := page*256 + offset
 			if vm.currentData() == 0 {
 				vm.ip = int(addr)
 			} else {
@@ -55,7 +58,10 @@ func (vm *vm) Run() {
 			}
 		case asm.OpCodeJmpNZ:
 			vm.ip += 1
-			addr := vm.currentInstruction()
+			page := int(vm.currentInstruction())
+			vm.ip += 1
+			offset := int(vm.currentInstruction())
+			addr := page*256 + offset
 			if vm.currentData() != 0 {
 				vm.ip = int(addr)
 			} else {
