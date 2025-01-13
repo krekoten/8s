@@ -12,10 +12,11 @@ import (
 
 func init() {
 	rootCmd.AddCommand(&cobra.Command{
-		Use:   "run [filename]",
-		Short: "Run brainfuck code in file",
-		Args:  cobra.MinimumNArgs(1),
-		RunE:  cmdRunHandler,
+		Use:     "run filename",
+		Short:   "Run brainfuck code in file",
+		Args:    cobra.MinimumNArgs(1),
+		Aliases: []string{"r"},
+		RunE:    cmdRunHandler,
 	})
 }
 
